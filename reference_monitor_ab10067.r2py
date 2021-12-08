@@ -31,25 +31,36 @@ class ABFile():
       self.Bfile = openfile(self.Bfn,create)
       self.Afile.writeat('SE',0)
 
+# Personal Note - Do not need to edit code ABOVE this line
 
   def writeat(self,data,offset):
-    
+      self.lock = lockmade()
+      self.lock.acquire(True)
+      if (offset>=0 and offset < len(self.Bfile.readat(None,0))):
     # Write the requested data to the B file using the sandbox's writeat call
-    self.Bfile.writeat(data,offset)
-  
+        self.Bfile.writeat(data,offset)
+      self.lock.release()
+
+
   def readat(self,bytes,offset):
+    self.lock = lockmade()
+    self.lock.acquire(True)
+    output = ''
     # Read from the A file using the sandbox's readat...
-    return self.Afile.readat(bytes,offset)
+    if (offset>=0 and offset < len(self.Bfile.readat(None,0))):
+        result = self.Afile.readat(bytes,offset)
+    self.lock.release()
+    return result
 
   def close(self):
+    if self.Bfile.readat(None,0).begins('S') and self.Bfile.readat(None,0).ends('E'):
+          openfile(self.Afn,True).writeat(self.Bfile.readat(None,0),0)
     self.Afile.close()
-    date = self.Bfile.readat(None,0)
-    if data[0] == 'S' and data[-1] == 'E':
-    	self.Afile = openfile(self.Afn, False)
-    	self.Afile.writeat(data,0)
-    	self.Afile.close()
     self.Bfile.close()
+    removefile(self.Bfn)
+    removefile(self.Afn)
 
+# Personal Note - Do not need to edit code BELOW this line
 
 def ABopenfile(filename, create):
   return ABFile(filename,create)
