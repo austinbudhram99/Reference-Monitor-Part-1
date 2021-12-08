@@ -65,6 +65,7 @@ class ABFile():
     self.Bfile.close()
     self.Afile.lock.release()
     self.Bfile.lock.release()
+    removefile(self.Bfn)
 
 def ABopenfile(filename, create):
   return ABFile(filename,create)
