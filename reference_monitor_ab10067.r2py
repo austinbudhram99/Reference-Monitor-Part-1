@@ -57,8 +57,8 @@ class ABFile():
           openfile(self.Afn,True).writeat(self.Bfile.readat(None,0),0)
     self.Afile.close()
     self.Bfile.close()
-    removefile(self.Bfn)
     removefile(self.Afn)
+    removefile(self.Bfn)
 
 # Personal Note - Do not need to edit code BELOW this line
 
