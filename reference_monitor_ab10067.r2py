@@ -43,17 +43,14 @@ class ABFile():
             self.Afile = openfile(self.Afn,True)
             self.Bfile = openfile(self.Bfn,True)
             self.Bfile.writeat(self.Afile.readat(None,0),0)
-        else:
-            raise FileNotFoundError
+
 # NOTE TO SELF
   def writeat(self,data,offset):
       self.lock = createlock()
       self.lock.acquire(True)
       if offset < 0:
-        raise RepyArgumentError
         self.lock.release()
       elif offset > len(self.Bfile.readat(None,0),0):
-        raise SeekPastEndOfFileError
         self.lock.release()
       else:
     # Write the requested data to the B file using the sandbox's writeat call
@@ -67,24 +64,18 @@ class ABFile():
     length = len(self.Afile.readat(None,0))
     # Read from the A file using the sandbox's readat...
     if offset < 0 or length < 0:
-        raise RepyArgumentError
         self.lock.release()
     elif offset >= len(self.Afile.readat(None,0)):
-        raise SeekPastEndOfFileError
         self.lock.release()
     elif bytes > length and bytes !=None:
-        raise SeekPastEndOfFileError
         self.lock.release()
     elif (len(self.Afile.readat(None,0))) < offset+length) and bytes != None:
-        raise RepyArgumentError
         self.lock.release()
     else:
         try:
             read_data = self.Afile.readat(bytes,offset)
             self.lock.release()
-            return read_data
-        except:
-            raise RepyArgumentError
+            
 # note to self- BREAK
   def close(self):
     backup_data = self.Afile.readat(None,0)
